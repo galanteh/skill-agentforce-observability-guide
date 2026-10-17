@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{CLIENT}} × Salesforce · Guía Agentforce Observability</title>
+<style>
+:root{--accent:{{ACCENT}};--accent-dark:{{ACCENT_DARK}};--accent-soft:{{ACCENT_SOFT}};--hero1:{{HERO1}};--hero2:{{HERO2}};--navy:#032D60;--blue:#0176D3;--sky:#EAF5FE;--green:#2E844A;--greenbg:#EAF7EC;--amber:#DD7A01;--amberbg:#FEF4E8;--grey:#5C5C5C;--line:#E5E7EB;--bg:#F7F8FA}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:#1F2937;background:var(--bg);line-height:1.55}
+a{color:var(--blue)}
+.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:10px 24px}
+.logos{display:flex;align-items:center;gap:12px}
+.logos img.client{height:32px;max-width:180px;object-fit:contain}.logos img.sf{height:34px}
+.logos .x{color:#9CA3AF;font-size:18px}
+.prog{flex:1;display:flex;align-items:center;gap:12px;max-width:420px;margin-left:auto}
+.prog-bar{flex:1;height:8px;background:#EEF0F3;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--accent);transition:width .4s}
+.prog-txt{font-size:13px;color:var(--grey);white-space:nowrap;font-weight:600}
+.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:600}
+.btn:hover{border-color:var(--accent);color:var(--accent-dark)}
+.wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:240px 1fr;gap:32px;padding:28px 24px 80px}
+nav.side{position:sticky;top:76px;align-self:start}
+nav.side a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;color:#374151;text-decoration:none;font-size:14px;margin-bottom:2px}
+nav.side a .n{width:22px;height:22px;border-radius:50%;background:#EEF0F3;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--grey);flex-shrink:0}
+nav.side a.active{background:#fff;color:var(--navy);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+nav.side a.active .n{background:var(--accent);color:#fff}
+nav.side a.done .n{background:var(--green);color:#fff}
+main{min-width:0}
+.hero{background:linear-gradient(135deg,var(--hero1) 0%,var(--hero2) 100%);color:#fff;border-radius:18px;padding:40px 40px 34px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hero .tag{display:inline-block;background:var(--accent);font-size:12px;font-weight:700;letter-spacing:.5px;padding:4px 10px;border-radius:99px;margin-bottom:14px;text-transform:uppercase}
+.hero h1{margin:0 0 6px;font-size:36px;line-height:1.15}
+.hero p{margin:0;opacity:.92;max-width:680px;font-size:16px}
+.hero .meta{margin-top:18px;font-size:13px;opacity:.75}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:-22px;position:relative;z-index:2;padding:0 24px}
+.kpi{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 4px 14px rgba(3,45,96,.08)}
+.kpi b{display:block;font-size:20px;color:var(--navy)}.kpi span{font-size:13px;color:var(--grey)}
+section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px 30px;margin-top:22px;scroll-margin-top:84px}
+section h2{margin:0 0 6px;font-size:22px;color:var(--navy);display:flex;align-items:center;gap:10px}
+section h2 .num{background:var(--accent);color:#fff;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:14px;flex-shrink:0}
+section .lead{color:var(--grey);margin:0 0 18px}
+h3{color:var(--blue);font-size:16px;margin:0}
+.callout{border-left:4px solid var(--navy);background:var(--sky);padding:12px 16px;border-radius:0 10px 10px 0;margin:14px 0;font-size:14.5px}
+.callout.green{border-color:var(--green);background:var(--greenbg)}
+.callout.warn{border-color:var(--amber);background:var(--amberbg)}
+.path{background:#F1F5F9;border:1px solid #E2E8F0;border-radius:6px;padding:1px 7px;font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--navy)}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:.2s;background:#fff}
+.card:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.card .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;margin-bottom:8px;background:var(--accent-soft)}
+.card h4{margin:0 0 4px;color:var(--navy);font-size:15px}
+.card p{margin:0;font-size:13.5px;color:var(--grey)}
+.card .more{max-height:0;overflow:hidden;transition:max-height .3s;font-size:13.5px}
+.card.open .more{max-height:240px;margin-top:8px}
+.card .hint{font-size:12px;color:var(--accent-dark);margin-top:8px;font-weight:600}
+.seg{display:inline-flex;background:#EEF0F3;border-radius:10px;padding:4px;margin:6px 0 14px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:8px 16px;border-radius:8px;font-weight:600;font-size:13.5px;cursor:pointer;color:var(--grey)}
+.seg button.on{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.costlist{display:grid;gap:8px}
+.costlist div{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border-radius:10px;font-size:14.5px}
+.costlist.free div{background:var(--greenbg)}.costlist.paid div{background:#FDECEE}
+.costlist .i{font-weight:800;flex-shrink:0}
+.free .i{color:var(--green)}.paid .i{color:#BA0517}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.15s;user-select:none}
+.chk:hover{border-color:#C7D2FE}
+.chk .box{width:22px;height:22px;border:2px solid #CBD5E1;border-radius:6px;flex-shrink:0;display:grid;place-items:center;margin-top:1px;transition:.15s}
+.chk.on{background:#F6FBF7;border-color:#BFE3C8}
+.chk.on .box{background:var(--green);border-color:var(--green)}
+.chk.on .box:after{content:"✓";color:#fff;font-size:14px;font-weight:800}
+.chk .t{font-size:14.5px}.chk .t b{color:var(--navy)}
+.chk .t small{display:block;color:var(--grey);font-size:13px;margin-top:2px}
+.chk.on .t b{text-decoration:line-through;text-decoration-color:#9CA3AF}
+.steps{display:grid;gap:12px}
+.step{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.step-h{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;background:#fff}
+.step-h .sn{width:34px;height:34px;border-radius:50%;background:#EEF0F3;color:var(--navy);font-weight:800;display:grid;place-items:center;flex-shrink:0}
+.step.complete .sn{background:var(--green);color:#fff}
+.step-h .st{flex:1}.step-h .st h3{color:var(--navy)}
+.step-h .st span{font-size:13px;color:var(--grey)}
+.step-h .chev{transition:.2s;color:var(--grey)}
+.step.open .chev{transform:rotate(180deg)}
+.step-b{display:none;padding:0 18px 18px 66px}
+.step.open .step-b{display:block}
+.badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#EEF0F3;color:var(--grey);white-space:nowrap}
+.step.complete .badge{background:var(--greenbg);color:var(--green)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0}
+th{background:var(--navy);color:#fff;text-align:left;padding:10px 12px;font-weight:600}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#FAFBFC}
+.flow{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 18px}
+.flow .f{flex:1;min-width:150px;background:var(--sky);border-radius:12px;padding:14px}
+.flow .f b{display:block;color:var(--navy);font-size:14px}.flow .f span{font-size:13px;color:var(--grey)}
+.flow .f .k{font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.5px}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.feat div{border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13.5px}
+.feat div b{display:block;color:var(--navy);margin-bottom:2px}
+/* mock dashboards */
+.mock{border:1px solid #D8DDE6;border-radius:14px;overflow:hidden;background:#F3F3F3}
+.mock-top{background:#fff;border-bottom:1px solid #D8DDE6;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--grey)}
+.mock-top .dots{display:flex;gap:5px}.mock-top .dots i{width:9px;height:9px;border-radius:50%;background:#D8DDE6;display:block}
+.mock-top b{color:var(--navy)}
+.mock-top .filters{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.mock-top .filters span{border:1px solid #D8DDE6;border-radius:6px;padding:2px 8px;font-size:12px;background:#fff}
+.mock-body{padding:16px;display:grid;gap:12px}
+.panel{display:none}.panel.on{display:block}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{background:#fff;border-radius:10px;padding:12px 14px;border:1px solid #E5E7EB}
+.tile small{color:var(--grey);font-size:12px;display:block}
+.tile b{font-size:22px;color:var(--navy);display:block;margin-top:2px}
+.tile .d{font-size:12px;font-weight:700}
+.up{color:var(--green)}.down{color:#BA0517}.warnc{color:var(--amber)}
+.box2{display:grid;grid-template-columns:3fr 2fr;gap:12px}
+.pane{background:#fff;border-radius:10px;padding:14px;border:1px solid #E5E7EB;min-width:0}
+.pane h5{margin:0 0 10px;font-size:13px;color:var(--navy)}
+.bars div{display:grid;grid-template-columns:130px 1fr 42px;gap:8px;align-items:center;font-size:12.5px;margin-bottom:7px}
+.bars .bg{height:10px;background:#EEF0F3;border-radius:99px;overflow:hidden}
+.bars .fg{height:100%;background:var(--accent);border-radius:99px}
+.score{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:700}
+.s-hi{background:var(--greenbg);color:var(--green)}.s-md{background:var(--amberbg);color:var(--amber)}.s-lo{background:#FDECEE;color:#BA0517}
+.alert{display:flex;gap:12px;align-items:flex-start;background:#FEF4E8;border:1px solid #F9D9B0;border-radius:10px;padding:12px 14px;font-size:13.5px}
+.wf{font-size:12.5px}
+.wf .row{display:grid;grid-template-columns:230px 1fr 60px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed #E5E7EB}
+.wf .lbl b{color:var(--navy);display:block}.wf .lbl span{color:var(--grey)}
+.wf .track{position:relative;height:14px;background:#F3F4F6;border-radius:4px}
+.wf .seg2{position:absolute;top:0;height:100%;border-radius:4px}
+.wf .ms{text-align:right;color:var(--grey);font-variant-numeric:tabular-nums}
+.chat{display:grid;gap:8px;margin-bottom:12px}
+.chat .u,.chat .a{padding:9px 12px;border-radius:12px;font-size:13px;max-width:80%}
+.chat .u{background:var(--navy);color:#fff;justify-self:end;border-bottom-right-radius:3px}
+.chat .a{background:#fff;border:1px solid #E5E7EB;border-bottom-left-radius:3px}
+.chat .cite{display:inline-block;margin-left:4px;font-size:11px;background:var(--sky);color:var(--blue);border-radius:4px;padding:0 5px;font-weight:700}
+.disclaimer{font-size:12px;color:var(--grey);margin-top:10px}
+.docs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.docs a{display:block;border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--navy);font-size:14px;font-weight:600;transition:.15s}
+.docs a:hover{border-color:var(--blue);background:var(--sky)}
+.docs a small{display:block;color:var(--grey);font-weight:400;font-size:12px;margin-top:2px}
+.contact{display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;border-radius:14px;padding:22px 24px;margin-top:22px}
+.contact a{color:#fff;font-weight:700}
+.done-banner{display:none;background:var(--greenbg);border:1px solid #BFE3C8;color:var(--green);padding:14px 18px;border-radius:12px;font-weight:700;margin-top:14px}
+.done-banner.show{display:block}
+footer{text-align:center;color:#9CA3AF;font-size:12px;margin-top:30px}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}nav.side{display:none}.cards,.docs,.feat,.kpis,.box2{grid-template-columns:1fr}.tiles{grid-template-columns:repeat(2,1fr)}.prog{display:none}.hero h1{font-size:28px}.wf .row{grid-template-columns:140px 1fr 50px}.bars div{grid-template-columns:100px 1fr 40px}}
+@media print{.topbar,nav.side,.btn,.seg{display:none!important}.wrap{display:block;padding:0}section{break-inside:avoid;border:0;padding:12px 0}.step-b{display:block!important}.card .more{max-height:none!important}.costlist.paid{display:grid!important}.panel{display:block!important;margin-bottom:12px}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-in">
+  <div class="logos">{{LOGO_TAG}}<span class="x">×</span><img class="sf" src="{{SF_SRC}}" alt="Salesforce"></div>
+  <div class="prog"><div class="prog-bar"><div class="prog-fill" id="pf"></div></div><span class="prog-txt" id="pt">0% completado</span></div>
+  <button class="btn" onclick="resetAll()">Reiniciar</button>
+  <button class="btn" onclick="window.print()">Imprimir / PDF</button>
+</div></div>
+
+<div class="wrap">
+<nav class="side">
+  <a href="#que-es" data-s="que-es"><span class="n">1</span>Qué es</a>
+  <a href="#costo" data-s="costo"><span class="n">$</span>Costo</a>
+  <a href="#prerrequisitos" data-s="prerrequisitos"><span class="n">2</span>Prerrequisitos</a>
+  <a href="#activacion" data-s="activacion"><span class="n">3</span>Activación</a>
+  <a href="#acceso" data-s="acceso"><span class="n">4</span>Acceso diario</a>
+  <a href="#tableros" data-s="tableros"><span class="n">5</span>Ejemplos de tableros</a>
+  <a href="#consideraciones" data-s="consideraciones"><span class="n">6</span>Consideraciones</a>
+  <a href="#checklist" data-s="checklist"><span class="n">7</span>Checklist</a>
+  <a href="#docs" data-s="docs"><span class="n">8</span>Documentación</a>
+</nav>
+
+<main>
+  <div class="hero">
+    <span class="tag">{{CLIENT}} × Salesforce</span>
+    <h1>Agentforce Observability</h1>
+    <p>Guía interactiva para que el equipo de {{CLIENT}} active por sus propios medios la observabilidad de sus agentes: analítica, optimización, monitoreo de salud y trazas de sesión.</p>
+    <div class="meta">Versión {{VERSION}} · Marca cada paso a medida que lo completas</div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b>0 créditos</b><span>Data 360 para la observabilidad estándar</span></div>
+    <div class="kpi"><b>5 pasos</b><span>para activarla en la org</span></div>
+    <div class="kpi"><b>5 min</b><span>de actualización en Health Monitoring</span></div>
+  </div>
+
+  <section id="que-es">
+    <h2><span class="num">1</span>Qué es Agentforce Observability</h2>
+    <p class="lead">Herramientas dentro de Agentforce Studio que muestran qué hacen los agentes en producción, por qué toman cada decisión y cómo rinden. Haz clic en cada tarjeta para ver más.</p>
+    <div class="cards">
+      <div class="card" onclick="this.classList.toggle('open')"><div class="ic">📊</div><h4>Agent Analytics</h4><p>KPIs de desempeño y tendencias en el tiempo.</p>
+        <div class="more">Sesiones, engagement, escalamiento, tasa de éxito, satisfacción, calidad, salud y trust. Filtrable por agente, canal, subagente, acción e intención. Incluye vistas dedicadas para agentes de voz.</div><div class="hint">Ver más ▾</div></div>
+      <div class="card" onclick="this.classList.toggle('open')"><div class="ic">🧠</div><h4>Agent Optimization</h4><p>El razonamiento del agente, paso a paso.</p>
+        <div class="more">Registra cada paso del razonamiento, agrupa pedidos similares por intención y ayuda a detectar patrones de falla y oportunidades de mejora en instrucciones y acciones.</div><div class="hint">Ver más ▾</div></div>
+      <div class="card" onclick="this.classList.toggle('open')"><div class="ic">❤️</div><h4>Agent Health Monitoring</h4><p>Salud casi en tiempo real con alertas.</p>
+        <div class="more">Tasa de error, latencia y escalamientos en intervalos de 5 minutos. Alertas por email según umbrales configurables, con un "cooldown" de 30 minutos para evitar exceso de notificaciones.</div><div class="hint">Ver más ▾</div></div>
+      <div class="card" onclick="this.classList.toggle('open')"><div class="ic">🧵</div><h4>Session Tracing (STDM)</h4><p>El modelo de datos que alimenta todo.</p>
+        <div class="more">El Session Tracing Data Model guarda en Data Cloud cada sesión turno por turno: input del usuario, decisiones del planner, acciones, prompts, errores y respuesta final. Es la base de Analytics, Optimization y Health.</div><div class="hint">Ver más ▾</div></div>
+    </div>
+  </section>
+
+  <section id="costo">
+    <h2><span class="num">$</span>¿Consume créditos?</h2>
+    <div class="callout green"><b>No, para la observabilidad estándar.</b> Según las Release Notes oficiales de Salesforce (2026): para las funcionalidades de observabilidad de agentes, la recolección de datos, el cálculo de métricas, las consultas, los reportes y los dashboards ya no consumen créditos de Data 360, en todos los SKUs de Agentforce. El consumo sigue visible en Digital Wallet como referencia, pero no descuenta créditos.</div>
+    <div class="seg" id="segCost"><button class="on" onclick="cost('free',this)">✓ No consume</button><button onclick="cost('paid',this)">● Sí consume</button></div>
+    <div class="costlist free" id="c-free">
+      <div><span class="i">✓</span>Session Tracing e ingesta de telemetría</div>
+      <div><span class="i">✓</span>Métricas y agregaciones de Analytics, Health y Optimization</div>
+      <div><span class="i">✓</span>Consultas y visualizaciones de los dashboards estándar</div>
+      <div><span class="i">✓</span>Modificar o extender los dashboards estándar</div>
+      <div><span class="i">✓</span>Drill-downs, evaluación de alertas y trazas de sesión</div>
+    </div>
+    <div class="costlist paid" id="c-paid" style="display:none">
+      <div><span class="i">●</span>Crear dashboards nuevos desde cero</div>
+      <div><span class="i">●</span>Ingerir fuentes de datos externas (por ejemplo, Snowflake)</div>
+      <div><span class="i">●</span>Crear objetos nuevos en el modelo semántico</div>
+      <div><span class="i">●</span>Las acciones del agente en sí (Flex Credits por acción, sin cambios)</div>
+    </div>
+  </section>
+
+  <section id="prerrequisitos">
+    <h2><span class="num">2</span>Prerrequisitos</h2>
+    <p class="lead">Verifica que la org cumpla con todo antes de activar.</p>
+    <div class="chk" data-id="pre1"><div class="box"></div><div class="t"><b>Data Cloud (Data 360) aprovisionado</b><small><span class="path">Setup → Data Cloud Setup</span>. Si no está activo: Get Started y esperar a que se inicialice la instancia.</small></div></div>
+    <div class="chk" data-id="pre2"><div class="box"></div><div class="t"><b>Einstein activado</b><small><span class="path">Setup → Einstein Setup</span> → toggle "Turn on Einstein".</small></div></div>
+    <div class="chk" data-id="pre3"><div class="box"></div><div class="t"><b>Al menos un agente activo</b><small>Agentforce Studio → Agents. Los agentes en borrador o inactivos no generan trazas.</small></div></div>
+    <div class="chk" data-id="pre4"><div class="box"></div><div class="t"><b>Salesforce Standard Data Model ≥ 1.130</b><small><span class="path">Setup → Installed Packages</span>. Si la versión es menor, actualizar con el link que provee Salesforce.</small></div></div>
+    <div class="chk" data-id="pre5"><div class="box"></div><div class="t"><b>Usuario que configura con permisos</b><small>System Administrator con los permission sets Data Cloud User y Data Cloud Architect.</small></div></div>
+  </section>
+
+  <section id="activacion">
+    <h2><span class="num">3</span>Activación paso a paso</h2>
+    <p class="lead">Abre cada paso y marca las tareas a medida que las completas.</p>
+    <div class="steps">
+      <div class="step open" data-step>
+        <div class="step-h" onclick="toggleStep(this)"><div class="sn">1</div><div class="st"><h3>Activar Session Tracing y Optimization</h3><span>Setup → Einstein Audit, Analytics, and Monitoring Setup</span></div><span class="badge">0/4</span><span class="chev">▾</span></div>
+        <div class="step-b">
+          <div class="chk" data-id="s1a"><div class="box"></div><div class="t"><b>Ir a <span class="path">Setup → Einstein Audit, Analytics, and Monitoring Setup</span></b></div></div>
+          <div class="chk" data-id="s1b"><div class="box"></div><div class="t"><b>Activar Agentforce Session Tracing</b><small>Incluye el Data Model. Si hay más de un data space, elegir el principal de Agentforce.</small></div></div>
+          <div class="chk" data-id="s1c"><div class="box"></div><div class="t"><b>Verificar que Agent Optimization quede activado</b><small>Se activa automáticamente con Session Tracing.</small></div></div>
+          <div class="chk" data-id="s1d"><div class="box"></div><div class="t"><b>Confirmar que el toggle legacy "Agent Analytics" quede apagado</b><small>Está marcado para retiro y lo reemplaza Session Tracing.</small></div></div>
+          <div class="callout">💡 En orgs con un solo data space, Session Tracing suele venir activado por defecto al encender Agentforce. <b>Agent Platform Tracing</b> es opcional: da visibilidad profunda de acciones Flow y Apex, útil para el equipo técnico al depurar.</div>
+        </div>
+      </div>
+      <div class="step" data-step>
+        <div class="step-h" onclick="toggleStep(this)"><div class="sn">2</div><div class="st"><h3>Instalar las apps de Agent Analytics</h3><span>Setup → Agent Analytics</span></div><span class="badge">0/2</span><span class="chev">▾</span></div>
+        <div class="step-b">
+          <div class="chk" data-id="s2a"><div class="box"></div><div class="t"><b>Instalar Service Agent Analytics</b><small>Para los agentes de cara al cliente.</small></div></div>
+          <div class="chk" data-id="s2b"><div class="box"></div><div class="t"><b>Instalar Employee Agent Analytics</b><small>Para agentes internos y Agentforce Coworker. Esperar a que el estado pase a "Installed".</small></div></div>
+        </div>
+      </div>
+      <div class="step" data-step>
+        <div class="step-h" onclick="toggleStep(this)"><div class="sn">3</div><div class="st"><h3>Asignar permisos a los usuarios</h3><span>Para cada persona que deba ver la observabilidad</span></div><span class="badge">0/4</span><span class="chev">▾</span></div>
+        <div class="step-b">
+          <div class="chk" data-id="s3a"><div class="box"></div><div class="t"><b>Access Agentforce Optimization</b><small>Acceso a Agent Optimization.</small></div></div>
+          <div class="chk" data-id="s3b"><div class="box"></div><div class="t"><b>Tableau Next Limited Consumer o Platform Analyst</b><small>Dashboards de Analytics. Consumer = solo ver; Analyst = ver y editar.</small></div></div>
+          <div class="chk" data-id="s3c"><div class="box"></div><div class="t"><b>Data Cloud User</b><small>Acceso a los datos de sesión en Data Cloud.</small></div></div>
+          <div class="chk" data-id="s3d"><div class="box"></div><div class="t"><b>API Enabled = true en el perfil</b><small>⚠️ Sin esto, las métricas de Tableau Next no cargan y no aparece ningún error claro.</small></div></div>
+        </div>
+      </div>
+      <div class="step" data-step>
+        <div class="step-h" onclick="toggleStep(this)"><div class="sn">4</div><div class="st"><h3>Proteger los datos de sesión</h3><span>Data spaces, políticas y enmascarado</span></div><span class="badge">0/3</span><span class="chev">▾</span></div>
+        <div class="step-b">
+          <div class="chk" data-id="s4a"><div class="box"></div><div class="t"><b>Revisar permisos a nivel data space</b><small>Solo los usuarios autorizados pueden ver o consultar las trazas.</small></div></div>
+          <div class="chk" data-id="s4b"><div class="box"></div><div class="t"><b>Quitar o acotar la política "Allow All"</b><small>El permission set Data Cloud Architect accede a todos los datos por defecto.</small></div></div>
+          <div class="chk" data-id="s4c"><div class="box"></div><div class="t"><b>Configurar Dynamic Data Masking</b><small>Las conversaciones pueden incluir {{SENSITIVE}}.</small></div></div>
+        </div>
+      </div>
+      <div class="step" data-step>
+        <div class="step-h" onclick="toggleStep(this)"><div class="sn">5</div><div class="st"><h3>Configurar alertas de salud</h3><span>Agentforce Studio → Observe → Health Monitoring</span></div><span class="badge">0/3</span><span class="chev">▾</span></div>
+        <div class="step-b">
+          <div class="chk" data-id="s5a"><div class="box"></div><div class="t"><b>Abrir Health Monitoring</b><small>Agentforce Studio → Observe → Health Monitoring.</small></div></div>
+          <div class="chk" data-id="s5b"><div class="box"></div><div class="t"><b>Definir umbrales por métrica</b><small>Tasa de error, latencia promedio y escalamientos.</small></div></div>
+          <div class="chk" data-id="s5c"><div class="box"></div><div class="t"><b>Configurar destinatarios de email</b><small>Las alertas tienen un cooldown de 30 minutos por defecto.</small></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="done-banner" id="doneBanner">🎉 ¡Activación completa! Las métricas van a empezar a aparecer con las nuevas conversaciones.</div>
+  </section>
+
+  <section id="acceso">
+    <h2><span class="num">4</span>Cómo acceder día a día</h2>
+    <div class="flow">
+      <div class="f"><span class="k">PASO 1</span><b>App Launcher</b><span>Buscar "Agentforce Studio"</span></div>
+      <div class="f"><span class="k">PASO 2</span><b>Observe</b><span>Sección del panel izquierdo</span></div>
+      <div class="f"><span class="k">PASO 3</span><b>Elegir herramienta</b><span>Analytics, Optimization o Health</span></div>
+      <div class="f"><span class="k">PASO 4</span><b>Filtrar</b><span>Agente, canal ({{CHANNELS}}) y período</span></div>
+    </div>
+    <h3 style="margin-bottom:10px">Funcionalidades destacadas</h3>
+    <div class="feat">
+      <div><b>Vista de sesión</b>Traza completa, fuentes consultadas y scores de calidad.</div>
+      <div><b>Métricas evaluadas por LLM</b>Deflection y abandonment con prompts editables, ajustables a la definición de éxito de {{CLIENT}}.</div>
+      <div><b>Scores personalizados</b>"LLM-as-judge": sentimiento, tono, menciones de competencia, interés de producto, señales de precio.</div>
+      <div><b>Traza multiagente</b>Vista "waterfall": si un agente deriva a un subagente, la traza lo sigue.</div>
+      <div><b>Citas inline</b>Fragmento exacto del artículo de Knowledge u otra fuente usada en la respuesta.</div>
+      <div><b>Dashboard unificado</b>Trust, RAG, salud y calidad en una vista, con descarga masiva de sesiones.</div>
+    </div>
+  </section>
+
+  <section id="tableros">
+    <h2><span class="num">5</span>Ejemplos de tableros</h2>
+    <p class="lead">Así se ve la información una vez activada. Recorré cada vista para entender qué preguntas responde.</p>
+    <div class="seg" id="segDash">
+      <button class="on" onclick="dash('an',this)">📊 Analytics</button>
+      <button onclick="dash('he',this)">❤️ Health Monitoring</button>
+      <button onclick="dash('op',this)">🧠 Optimization</button>
+      <button onclick="dash('tr',this)">🧵 Traza de sesión</button>
+    </div>
+    <div class="mock">
+      <div class="mock-top"><div class="dots"><i></i><i></i><i></i></div><b id="mockTitle">Agentforce Studio · Analytics</b>
+        <div class="filters"><span id="fAgent"></span><span>Últimos 14 días</span><span>Todos los canales</span></div></div>
+      <div class="mock-body">
+        <div class="panel on" id="p-an">
+          <div class="tiles" id="anTiles"></div>
+          <div class="box2" style="margin-top:12px">
+            <div class="pane"><h5>Sesiones por día</h5><div id="anChart"></div></div>
+            <div class="pane"><h5>Top intenciones</h5><div class="bars" id="anBars"></div></div>
+          </div>
+        </div>
+        <div class="panel" id="p-he">
+          <div class="tiles" id="heTiles"></div>
+          <div class="box2" style="margin-top:12px">
+            <div class="pane"><h5>Tasa de escalamiento (intervalos de 5 min) · umbral 15%</h5><div id="heChart"></div></div>
+            <div class="pane"><h5>Alertas recientes</h5>
+              <div class="alert"><div style="font-size:20px">⚠️</div><div><b>Escalamiento sobre umbral</b><br>18,4% entre 10:30 y 10:45 en el canal {{CH1}}. Email enviado a los responsables. Próxima alerta tras el cooldown (30 min).</div></div>
+              <div class="alert" style="background:var(--greenbg);border-color:#BFE3C8;margin-top:8px"><div style="font-size:20px">✅</div><div><b>Latencia normalizada</b><br>Volvió a 3,1 s a las 09:10.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel" id="p-op">
+          <div class="pane"><h5>Sesiones e intenciones · calidad por intención</h5>
+            <table><thead><tr><th>Intención</th><th>Sesiones</th><th>Calidad</th><th>Tasa de éxito</th><th>Señal detectada</th></tr></thead><tbody id="opBody"></tbody></table>
+          </div>
+        </div>
+        <div class="panel" id="p-tr">
+          <div class="box2">
+            <div class="pane"><h5>Conversación</h5><div class="chat" id="trChat"></div></div>
+            <div class="pane"><h5>Scores de la sesión</h5><div class="bars" id="trScores"></div></div>
+          </div>
+          <div class="pane" style="margin-top:12px"><h5>Traza "waterfall" · {{TRACE_TOTAL}}</h5><div class="wf" id="trWf"></div></div>
+        </div>
+      </div>
+    </div>
+    <p class="disclaimer">Ejemplo ilustrativo con datos ficticios para {{CLIENT}}; la interfaz real de Agentforce Studio puede variar. Capturas oficiales: <a target="_blank" href="https://www.salesforce.com/blog/agentforce-observability/">Salesforce Blog</a> · <a target="_blank" href="https://www.salesforce.com/agentforce/observability/">página de producto</a>.</p>
+  </section>
+
+  <section id="consideraciones">
+    <h2><span class="num">6</span>Consideraciones importantes</h2>
+    <div class="callout warn"><b>Sin datos retroactivos.</b> La analítica solo muestra conversaciones ocurridas después de activar Session Tracing. Los datos pueden demorar en aparecer.</div>
+    <div class="callout warn"><b>Apagar Session Tracing</b> detiene la recolección y desactiva funciones dependientes. Los datos existentes se conservan, pero queda un hueco en los dashboards.</div>
+    <div class="callout"><b>Exportación técnica.</b> Existe una API (beta) que exporta la traza de una sesión en formato OpenTelemetry (OTLP), para integrar con herramientas de monitoreo propias. OAuth 2.0 con External Client App; una sesión por request.</div>
+    <div class="callout"><b>Recomendación.</b> Validar primero en un sandbox y luego replicar en producción. Los nombres de menús pueden variar levemente según el release de la org.</div>
+  </section>
+
+  <section id="checklist">
+    <h2><span class="num">7</span>Checklist de activación</h2>
+    <p class="lead">Resumen que se completa solo a partir de lo que marcaste arriba.</p>
+    <table><thead><tr><th style="width:44px">#</th><th>Tarea</th><th style="width:130px">Estado</th></tr></thead><tbody id="sumBody"></tbody></table>
+  </section>
+
+  <section id="docs">
+    <h2><span class="num">8</span>Documentación oficial</h2>
+    <div class="docs">
+      <a target="_blank" href="https://help.salesforce.com/s/articleView?id=005237036&language=en_US&type=1">Observability Setup and Access<small>Salesforce Help</small></a>
+      <a target="_blank" href="https://help.salesforce.com/s/articleView?language=en_US&id=ai.generative_ai_session_trace_setup.htm&type=5">Set Up Agentforce Session Tracing<small>Salesforce Help</small></a>
+      <a target="_blank" href="https://help.salesforce.com/s/articleView?language=en_US&id=ai.generative_ai_session_trace_data_model.htm&type=5">Data Model for Session Tracing<small>Salesforce Help</small></a>
+      <a target="_blank" href="https://help.salesforce.com/s/articleView?id=ai.generative_ai_session_trace_usage_types.htm&language=en_US&type=5">Billing Considerations for Session Tracing<small>Salesforce Help</small></a>
+      <a target="_blank" href="https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_copilot.htm">Release Notes: Observability sin créditos Data 360<small>Salesforce Help</small></a>
+      <a target="_blank" href="https://help.salesforce.com/s/articleView?id=005226932&language=en_US&type=1">Learn About Agentforce Observability<small>Salesforce Help</small></a>
+      <a target="_blank" href="https://help.salesforce.com/s/articleView?id=ai.generative_ai_agent_analytics_data_model.htm&type=5">Agent Analytics Data Model<small>Salesforce Help</small></a>
+      <a target="_blank" href="https://developer.salesforce.com/docs/ai/agentforce/guide/otel-api.html">Export Session Tracing Data (OTel API)<small>Salesforce Developers</small></a>
+      <a target="_blank" href="https://developer.salesforce.com/blogs/2026/05/agent-platform-tracing-debug-agentforce-with-trace-trees-soql-and-slack">Agent Platform Tracing<small>Salesforce Developers Blog</small></a>
+      <a target="_blank" href="https://www.salesforce.com/blog/agentforce-observability/">Novedades de Observability (julio 2026)<small>Salesforce Blog</small></a>
+    </div>
+    <div class="contact">
+      <div style="font-size:30px">💬</div>
+      <div><b>¿Dudas durante la activación?</b><br>{{CONTACT_LINE}}</div>
+    </div>
+  </section>
+
+  <footer>{{CLIENT}} × Salesforce · Agentforce Observability · {{VERSION}}</footer>
+</main>
+</div>
+
+<script>
+const DATA = {{DATA_JSON}};
+const state = {};
+const summary = [
+  ['Data Cloud y Einstein activos', ['pre1','pre2']],
+  ['Standard Data Model ≥ 1.130', ['pre4']],
+  ['Session Tracing + Agent Optimization activados', ['s1a','s1b','s1c','s1d']],
+  ['Service y Employee Agent Analytics instalados', ['s2a','s2b']],
+  ['Permission sets asignados + API Enabled', ['s3a','s3b','s3c','s3d']],
+  ['"Allow All" revisada y Data Masking configurado', ['s4a','s4b','s4c']],
+  ['Alertas de Health Monitoring configuradas', ['s5a','s5b','s5c']],
+];
+const all = () => [...document.querySelectorAll('.chk')];
+all().forEach(el => el.addEventListener('click', () => { state[el.dataset.id] = !state[el.dataset.id]; render(); }));
+function toggleStep(h){ h.parentElement.classList.toggle('open'); }
+function segOn(id,b){ document.querySelectorAll('#'+id+' button').forEach(x => x.classList.remove('on')); b.classList.add('on'); }
+function cost(k,b){ segOn('segCost',b); document.getElementById('c-free').style.display = k==='free'?'grid':'none'; document.getElementById('c-paid').style.display = k==='paid'?'grid':'none'; }
+const titles = {an:'Analytics', he:'Health Monitoring', op:'Optimization', tr:'Sesión'};
+function dash(k,b){ segOn('segDash',b); document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.id==='p-'+k)); document.getElementById('mockTitle').textContent = 'Agentforce Studio · ' + titles[k]; }
+function resetAll(){ Object.keys(state).forEach(k => delete state[k]); render(); }
+
+function render(){
+  const items = all(); let done = 0;
+  items.forEach(el => { const on = !!state[el.dataset.id]; el.classList.toggle('on', on); if(on) done++; });
+  const pct = Math.round(done/items.length*100);
+  document.getElementById('pf').style.width = pct+'%';
+  document.getElementById('pt').textContent = pct+'% completado';
+  let stepsDone = 0;
+  document.querySelectorAll('[data-step]').forEach(s => {
+    const c = [...s.querySelectorAll('.chk')], d = c.filter(x => state[x.dataset.id]).length, complete = d===c.length;
+    s.querySelector('.badge').textContent = complete ? '✓ Completo' : d+'/'+c.length;
+    s.classList.toggle('complete', complete); if(complete) stepsDone++;
+  });
+  document.getElementById('doneBanner').classList.toggle('show', stepsDone===5);
+  document.getElementById('sumBody').innerHTML = summary.map(([t,ids],i) => {
+    const d = ids.filter(id => state[id]).length, ok = d===ids.length;
+    const st = ok ? '<span class="up" style="font-weight:700">✓ Listo</span>' : d ? '<span class="warnc" style="font-weight:700">En curso</span>' : '<span style="color:#9CA3AF">Pendiente</span>';
+    return `<tr><td>${i+1}</td><td>${t}</td><td>${st}</td></tr>`;
+  }).join('');
+  const navDone = {prerrequisitos:['pre1','pre2','pre3','pre4','pre5'], activacion: summary.slice(2).flatMap(x=>x[1])};
+  Object.entries(navDone).forEach(([s,ids]) => document.querySelector(`nav a[data-s="${s}"]`).classList.toggle('done', ids.every(id => state[id])));
+}
+
+// ---------- mock dashboards ----------
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function lineChart(el, vals, opts={}){
+  const W=520,H=170,P=26, max=Math.max(...vals, opts.threshold||0)*1.15, n=vals.length;
+  const x=i=>P+i*(W-2*P)/(n-1), y=v=>H-P-(v/max)*(H-2*P);
+  const pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area=`${P},${H-P} ${pts} ${W-P},${H-P}`;
+  const color=opts.color||css('--accent');
+  let grid=''; for(let g=0;g<=3;g++){const gy=P+g*(H-2*P)/3; grid+=`<line x1="${P}" x2="${W-P}" y1="${gy}" y2="${gy}" stroke="#EEF0F3"/>`;}
+  const th = opts.threshold ? `<line x1="${P}" x2="${W-P}" y1="${y(opts.threshold)}" y2="${y(opts.threshold)}" stroke="#BA0517" stroke-dasharray="5 4"/><text x="${W-P}" y="${y(opts.threshold)-5}" text-anchor="end" font-size="10" fill="#BA0517">umbral ${opts.threshold}%</text>` : '';
+  const hot = opts.threshold ? vals.map((v,i)=> v>opts.threshold?`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="#BA0517"/>`:'').join('') : '';
+  const lbl = (opts.labels||[]).map((l,i)=> l?`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#6B7280">${l}</text>`:'').join('');
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${grid}<polygon points="${area}" fill="${color}" opacity=".12"/><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>${th}${hot}${lbl}</svg>`;
+}
+function tiles(id, arr){ document.getElementById(id).innerHTML = arr.map(t => `<div class="tile"><small>${t[0]}</small><b>${t[1]}</b><span class="d ${t[3]}">${t[2]}</span></div>`).join(''); }
+function scoreCls(v){ return v>=4 ? 's-hi' : v>=3.3 ? 's-md' : 's-lo'; }
+
+document.getElementById('fAgent').textContent = DATA.agent;
+tiles('anTiles', [['Sesiones','12.480','▲ 9% vs. período anterior','up'],['Deflection','68%','▲ 4 pp','up'],['Escalamiento','14%','▼ 2 pp','up'],['Calidad promedio','4,1 / 5','▲ 0,2','up']]);
+const sess=[640,702,688,731,598,520,810,845,866,902,880,760,690,948];
+lineChart(document.getElementById('anChart'), sess, {labels: sess.map((_,i)=> i%3===0 ? 'D'+(i+1) : '')});
+const maxShare = Math.max(...DATA.intents.map(i => i.share));
+document.getElementById('anBars').innerHTML = DATA.intents.map(it => `<div><span>${it.name}</span><div class="bg"><div class="fg" style="width:${it.share/maxShare*100}%"></div></div><b>${it.share}%</b></div>`).join('');
+
+tiles('heTiles', [['Tasa de error','1,2%','● Normal','up'],['Latencia promedio','3,4 s','● Normal','up'],['Escalamientos','18,4%','● Sobre umbral','down'],['Alertas (24 h)','2','1 activa','warnc']]);
+const esc=[11,12,10,13,12,14,13,16,18.4,17.2,15.8,13,12,11.5,12,11];
+lineChart(document.getElementById('heChart'), esc, {threshold:15, color: css('--blue'), labels:['09:30','','','','10:00','','','','10:30','','','','11:00','','','']});
+
+document.getElementById('opBody').innerHTML = DATA.intents.map(it => `<tr><td><b style="color:var(--navy)">${it.name}</b></td><td>${it.sessions.toLocaleString('es-AR')}</td><td><span class="score ${scoreCls(it.quality)}">${it.quality.toFixed(1).replace('.',',')}</span></td><td>${it.success}%</td><td style="color:var(--grey)">${it.signal}</td></tr>`).join('');
+
+const tr = DATA.trace;
+document.getElementById('trChat').innerHTML = `<div class="u">${tr.user}</div><div class="a">${tr.answer}<span class="cite">[1]</span></div><div style="font-size:11.5px;color:var(--grey)">[1] ${tr.source}</div>`;
+document.getElementById('trScores').innerHTML = [['Resolución',92],['Calidad',84],['Groundedness (RAG)',95],['Sentimiento',78]].map(s => `<div><span>${s[0]}</span><div class="bg"><div class="fg" style="width:${s[1]}%;background:var(--green)"></div></div><b>${s[1]}</b></div>`).join('');
+const total = tr.steps.reduce((m,s)=>Math.max(m,s[2]+s[3]),0);
+const colors = {u:'#6B7280',p:css('--navy'),s:css('--accent'),a:css('--blue'),k:'#7C3AED',r:'#2E844A'};
+document.getElementById('trWf').innerHTML = tr.steps.map(s => `<div class="row"><div class="lbl"><b>${s[0]}</b><span>${s[1]}</span></div><div class="track"><div class="seg2" style="left:${s[2]/total*100}%;width:${Math.max(s[3]/total*100,1.2)}%;background:${colors[s[4]]}"></div></div><div class="ms">${s[3]} ms</div></div>`).join('');
+
+const links=[...document.querySelectorAll('nav.side a')];
+const obs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) links.forEach(l=>l.classList.toggle('active', l.dataset.s===e.target.id)); }),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('main section').forEach(s=>obs.observe(s));
+render();
+</script>
+</body>
+</html>
