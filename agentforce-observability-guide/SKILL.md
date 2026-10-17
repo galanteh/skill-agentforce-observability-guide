@@ -5,7 +5,7 @@ description: Genera, para cualquier cliente de Salesforce, una guía con su marc
 
 # Guía de Agentforce Observability con la marca del cliente
 
-Este skill produce una guía para el equipo de administración Salesforce de un cliente, de modo que pueda activar la observabilidad de sus agentes por su cuenta. El contenido técnico es el mismo para todos los clientes (ver `references/content.md`). Lo que cambia por cliente es la marca (logo, colores), la industria (ejemplos de tableros, canales, datos sensibles) y el contacto.
+Este skill produce una guía para el equipo de administración Salesforce de un cliente, de modo que pueda activar la observabilidad de sus agentes por su cuenta. El contenido técnico es el mismo para todos los clientes (ver `<skill-dir>/references/content.md`). Lo que cambia por cliente es la marca (logo, colores), la industria (ejemplos de tableros, canales, datos sensibles) y el contacto.
 
 ## Qué se necesita del usuario
 
@@ -53,13 +53,13 @@ Guarda la salida en la carpeta del cliente dentro de la carpeta de trabajo del u
 
 ## Mantener el contenido al día
 
-Los datos de costo (qué consume y qué no consume créditos), los nombres de menús y los permisos cambian con cada release. `references/content.md` tiene la fecha de la última verificación y las fuentes. Si pasaron más de ~3 meses, o el usuario pregunta específicamente por costos, busca en la web las Release Notes y la ayuda de Salesforce antes de generar. Si algo cambió, actualiza el texto en `assets/guide.template.html` y `scripts/build_docx.js` (los dos tienen el mismo contenido) y la fecha en `content.md`.
+Los datos de costo (qué consume y qué no consume créditos), los nombres de menús y los permisos cambian con cada release. `references/content.md` tiene la fecha de la última verificación y las fuentes. Si pasaron más de ~3 meses, o el usuario pregunta específicamente por costos, busca en la web las Release Notes y la ayuda de Salesforce antes de generar. Si algo cambió, actualiza el texto en `<skill-dir>/assets/guide.template.html` y `<skill-dir>/scripts/build_docx.js` (los dos tienen el mismo contenido) y la fecha en `<skill-dir>/references/content.md`.
 
 Para que el usuario lo transmita al cliente: la observabilidad estándar no consume créditos de Data 360. Sí consumen los dashboards nuevos desde cero, las fuentes externas y los objetos semánticos nuevos, y las acciones del agente siguen consumiendo Flex Credits. Si el cliente tiene condiciones contractuales particulares, sugerí validarlo con el equipo de pricing.
 
 ## Agregar una industria
 
-Copia un bloque en `scripts/industries.py` (agente, canales, datos sensibles, 6 intenciones con métricas y una traza de ejemplo) y agrega sinónimos en `ALIASES`. Los datos deben ser verosímiles para esa industria, porque son los que el cliente ve en los tableros de ejemplo.
+Copia un bloque en `<skill-dir>/scripts/industries.py` (agente, canales, datos sensibles, 6 intenciones con métricas y una traza de ejemplo) y agrega sinónimos en `ALIASES`. Los datos deben ser verosímiles para esa industria, porque son los que el cliente ve en los tableros de ejemplo.
 
 ## Datos sensibles
 
