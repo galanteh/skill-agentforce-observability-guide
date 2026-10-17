@@ -61,10 +61,10 @@ Los archivos `.skill` son archivos comprimidos en formato ZIP con una estructura
 **Opción B — comando directo:**
 
 ```bash
-cd agentforce-observability-guide && zip -r ../agentforce-observability-guide.skill . && cd ..
+zip -r agentforce-observability-guide.skill agentforce-observability-guide/
 ```
 
-Ejecutar desde la **raíz del repositorio**. El ZIP resultante tendrá los archivos del skill en la raíz del comprimido, sin carpeta contenedora redundante.
+Ejecutar desde la **raíz del repositorio**. El ZIP resultante tendrá la carpeta `agentforce-observability-guide/` en la raíz del comprimido, incluyendo de forma recursiva `assets/`, `references/` y `scripts/`.
 
 ### Instalar el skill en Claude
 
@@ -72,6 +72,45 @@ Ejecutar desde la **raíz del repositorio**. El ZIP resultante tendrá los archi
 2. Ir a *Settings → Skills* (o la sección de skills de tu interfaz).
 3. Hacer clic en **Cargar skill** y seleccionar `agentforce-observability-guide.skill`.
 4. Una vez cargado, Claude reconocerá automáticamente las instrucciones de `SKILL.md`.
+
+---
+
+## Guía paso a paso: Instalación y Uso
+
+**Paso 1: Acceder al menú de habilidades**
+Dirígete a la sección de "Personalizar" en tu entorno de Claude, selecciona la pestaña "Habilidades" y haz clic en el botón "Agregar".
+
+![Paso 1](docs/images/001.png)
+
+**Paso 2: Seleccionar la opción de subida**
+En el menú desplegable, elige la opción "Subir habilidad".
+
+![Paso 2](docs/images/002.png)
+
+**Paso 3: Cargar el archivo del skill**
+Aparecerá una ventana para cargar el archivo. Puedes arrastrarlo o explorar en tus carpetas.
+
+![Paso 3](docs/images/003.png)
+
+**Paso 4: Seleccionar el archivo empaquetado**
+Busca en tu computadora el archivo `agentforce-observability-guide.skill` que generaste previamente y selecciónalo.
+
+![Paso 4](docs/images/004.png)
+
+**Paso 5: Confirmar la instalación**
+Claude mostrará una vista previa con el nombre y la descripción del skill. Verifica que los datos sean correctos y haz clic en "Guardar".
+
+![Paso 5](docs/images/005.png)
+
+**Paso 6: Verificación del skill activo**
+El skill ya estará instalado y visible en tu lista de habilidades, listo para ser utilizado.
+
+![Paso 6](docs/images/006.png)
+
+**Paso 7: Invocar el skill en el chat**
+Para usarlo, abre un nuevo chat y escribe la barra diagonal `/`. Se desplegará el menú de habilidades; selecciona `agentforce-observability-guide`.
+
+![Paso 7](docs/images/007.png)
 
 ---
 
