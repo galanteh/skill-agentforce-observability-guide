@@ -25,8 +25,28 @@ Solicita solo lo que falte. Todo tiene un valor por defecto, salvo el nombre:
 
 ## Cómo generarla
 
+El script debe ejecutarse con su ruta correcta. Según el contexto:
+
+**Si se conoce la ruta del skill (`<skill-dir>`):**
 ```bash
 python3 <skill-dir>/scripts/build_guide.py \
+  --client "Coral Clouds" --logo /ruta/logo-coral-clouds.png --transparent-bg \
+  --industry retail --contact-name "Alex Rivera" --contact-email alex@salesforce.com \
+  --out "/ruta/carpeta/del/cliente"
+```
+
+**Si no se conoce la ruta exacta, buscarla primero:**
+```bash
+SKILL_DIR=$(dirname $(find . ~ -name "build_guide.py" 2>/dev/null | head -n 1)/..)
+python3 "$SKILL_DIR/scripts/build_guide.py" \
+  --client "Coral Clouds" --logo /ruta/logo-coral-clouds.png --transparent-bg \
+  --industry retail --contact-name "Alex Rivera" --contact-email alex@salesforce.com \
+  --out "/ruta/carpeta/del/cliente"
+```
+
+**Si el comando se ejecuta desde la raíz del propio repositorio o del skill desempacado:**
+```bash
+python3 scripts/build_guide.py \
   --client "Coral Clouds" --logo /ruta/logo-coral-clouds.png --transparent-bg \
   --industry retail --contact-name "Alex Rivera" --contact-email alex@salesforce.com \
   --out "/ruta/carpeta/del/cliente"

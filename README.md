@@ -61,10 +61,10 @@ Los archivos `.skill` son archivos comprimidos en formato ZIP con una estructura
 **Opción B — comando directo:**
 
 ```bash
-zip -r agentforce-observability-guide.skill agentforce-observability-guide
+cd agentforce-observability-guide && zip -r ../agentforce-observability-guide.skill . && cd ..
 ```
 
-Ejecutar desde la **raíz del repositorio** para que la estructura interna sea correcta.
+Ejecutar desde la **raíz del repositorio**. El ZIP resultante tendrá los archivos del skill en la raíz del comprimido, sin carpeta contenedora redundante.
 
 ### Instalar el skill en Claude
 
