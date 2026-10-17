@@ -112,6 +112,11 @@ Para usarlo, abre un nuevo chat y escribe la barra diagonal `/`. Se desplegará 
 
 ![Paso 7](docs/images/007.png)
 
+**Paso 8: Invocar el skill con los parámetros requeridos**
+Con el skill ya seleccionado (`/agentforce-observability-guide`), adjunta el archivo de imagen con el logotipo de tu cliente. En la misma caja de texto, detalla los parámetros de generación en forma de lista o texto plano (Cliente, Contacto, Correo e Industria). Esto evitará que Claude tenga que hacerte preguntas adicionales y generará la guía en un solo paso.
+
+![Paso 8: Uso con parámetros](docs/images/008.png)
+
 ---
 
 ## Prueba de ejecución local
