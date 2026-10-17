@@ -1,6 +1,6 @@
 ---
 name: "agentforce-observability-guide"
-description: Genera, para cualquier cliente de Salesforce, una guía con su marca para activar y usar Agentforce Observability (Session Tracing, Agent Analytics, Agent Optimization, Health Monitoring). Entrega un HTML interactivo con checklist, progreso y tableros de ejemplo, un Word (.docx) y una carpeta lista para Netlify, con el logo y los colores del cliente. Usar siempre que el usuario quiera compartir con un cliente cómo activar la observabilidad de agentes, armar una guía o un paso a paso de Observability/Session Tracing/Agent Analytics para un cliente, "personalizar la guía de observabilidad con el logo de X", repetir para otro cliente la guía hecha para COTO, o aclarar qué consume y qué no consume créditos de observabilidad, aunque no diga "skill" ni "guía".
+description: Genera, para cualquier cliente de Salesforce, una guía con su marca para activar y usar Agentforce Observability (Session Tracing, Agent Analytics, Agent Optimization, Health Monitoring). Entrega un HTML interactivo con checklist, progreso y tableros de ejemplo, un Word (.docx) y una carpeta lista para Netlify, con el logo y los colores del cliente. Usar siempre que el usuario quiera compartir con un cliente cómo activar la observabilidad de agentes, armar una guía o un paso a paso de Observability/Session Tracing/Agent Analytics para un cliente, "personalizar la guía de observabilidad con el logo de X", repetir para otro cliente la guía hecha para Coral Clouds, o aclarar qué consume y qué no consume créditos de observabilidad, aunque no diga "skill" ni "guía".
 ---
 
 # Guía de Agentforce Observability con la marca del cliente
@@ -27,8 +27,8 @@ Solicita solo lo que falte. Todo tiene un valor por defecto, salvo el nombre:
 
 ```bash
 python3 <skill-dir>/scripts/build_guide.py \
-  --client "COTO" --logo /ruta/logo-coto.png --transparent-bg \
-  --industry retail --contact-name "Gastón" --contact-email gaston@salesforce.com \
+  --client "Coral Clouds" --logo /ruta/logo-coral-clouds.png --transparent-bg \
+  --industry retail --contact-name "Alex Rivera" --contact-email alex@salesforce.com \
   --out "/ruta/carpeta/del/cliente"
 ```
 
@@ -36,7 +36,7 @@ Opciones útiles: `--accent "#CC2131"` (fuerza el color), `--hero brand` o `--he
 
 El script imprime un JSON con el color elegido (`accent_source` indica si salió del logo) y las rutas generadas. Si aparece un error de `docx` (npm), ejecuta `npm install -g docx` y vuelve a ejecutar el script.
 
-Guarda la salida en la carpeta del cliente dentro de la carpeta de trabajo del usuario (por ejemplo `Antartida/<Cliente>/` o `<cliente>/`). Si no existe, créala con el nombre del cliente.
+Guarda la salida en la carpeta del cliente dentro de la carpeta de trabajo del usuario (por ejemplo `CoralClouds/<Cliente>/` o `<cliente>/`). Si no existe, créala con el nombre del cliente.
 
 ## Verificar antes de entregar
 

@@ -7,8 +7,8 @@ Outputs (choose with --formats, default all):
   netlify  -> netlify-<slug>/index.html + netlify-<slug>.zip  (drag to app.netlify.com/drop)
 
 Example:
-  python3 build_guide.py --client "COTO" --logo logo.png --industry retail \
-      --contact-name "Gastón" --contact-email gaston@salesforce.com --out ./salida
+  python3 build_guide.py --client "Coral Clouds" --logo logo.png --industry retail \
+      --contact-name "Alex Rivera" --contact-email alex@salesforce.com --out ./salida
 Colors are extracted from the logo unless --accent is given.
 """
 import warnings; warnings.filterwarnings("ignore", category=DeprecationWarning)

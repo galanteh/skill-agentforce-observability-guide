@@ -1,5 +1,10 @@
 # Skill: Guía de Agentforce Observability con marca del cliente
 
+> **IMPORTANTE / AVISO LEGAL:**
+> Este proyecto es de código abierto con fines educativos y de demostración técnica. Toda la información técnica, nombres de menús, parámetros de observabilidad y lineamientos de arquitectura incluidos en este repositorio provienen exclusivamente de documentación técnica pública y oficial (Salesforce Help, Release Notes y guías públicas de Agentforce).
+>
+> Este repositorio **no contiene información confidencial, privada ni propietaria de ningún cliente u organización**. Su único propósito es servir como un ejemplo práctico de arquitectura sobre cómo diseñar e implementar "Skills" especializados en Claude para optimizar y estandarizar tareas de atención, adopción técnica y habilitación de clientes.
+
 Skill para Claude que genera, para cualquier cliente de Salesforce, una guía personalizada con su marca para activar y usar **Agentforce Observability** (Session Tracing, Agent Analytics, Agent Optimization, Health Monitoring).
 
 La guía incluye:
@@ -118,4 +123,4 @@ El contenido de referencia (`references/content.md`) tiene fecha de última veri
 
 ## Licencia
 
-Este proyecto es de uso interno. Adaptar según la política de distribución de tu organización.
+Este proyecto se distribuye bajo la licencia **MIT** (Open Source). Consulta el archivo [LICENSE](LICENSE) para más detalles.
